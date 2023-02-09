@@ -3,15 +3,18 @@ import backgroundPng from '../assets/img/background.png'
 import backgroundWebp from '../assets/img/background.webp'
 
 import React from 'react';
+import alanBtn from "@alan-ai/alan-sdk-web";
 
 function App() {
-  const [year, setYear] = React.useState('')
-  const [advice, setAdvice] = React.useState('')
+  const [year, setYear] = React.useState(``);
+  const [advice, setAdvice] = React.useState('Say "Hello" to this app!');
+
+  const alanAiKey =`fe9998c5c7ae1d4bf2009e4f66e1bae02e956eca572e1d8b807a3e2338fdd0dc/stage`
 
   function getAdviceValue() {
-    const url = 'https://api.adviceslip.com/advice'
+    const URL = 'https://api.adviceslip.com/advice'
 
-    fetch(url)
+    fetch(URL)
       .then(resp => {
       return resp.json()
       })
@@ -23,11 +26,25 @@ function App() {
   function getDateValue() {
     const date = new Date;
     setYear(date.getFullYear())
+  } 
+
+  function addAlanIntoProject() {
+    alanBtn({
+      key: alanAiKey,      
+      bottom: '50px',
+      right: '50px',
+      zIndex: 10,
+      onCommand: ({ command }) => {
+        if (command === 'newAdvice') {
+          getAdviceValue()             
+        }
+      }
+    });
   }
 
   React.useEffect(() => {
-    getDateValue()
-    getAdviceValue()
+    addAlanIntoProject()
+    getDateValue()    
   }, []);
 
 
@@ -53,7 +70,7 @@ function App() {
           </div>
           <div className="app__copyright">
             <div className="app__copyright-creator">© Created by Kostiantyn Sukhykh</div>
-            <div className="app__copyright-year">Kyiv, {year}</div>
+            <div className="app__copyright-year">Kyiv, {year === 2023? year: '2023-'+year}</div>
           </div>
         </div>
       </div>
